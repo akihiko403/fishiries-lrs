@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use ErrorException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -13,6 +14,10 @@ class LegacyApiService
     public function handle(Request $request): JsonResponse
     {
         try {
+            set_error_handler(static function (int $severity, string $message, string $file = '', int $line = 0): bool {
+                throw new ErrorException($message, 0, $severity, $file, $line);
+            });
+
             if ($this->requestExceedsPostMaxSize($request)) {
                 throw new LegacyApiException(
                     'Uploaded files are too large. Maximum total upload size is ' . $this->readableBytes($this->postMaxSizeBytes()) . '.',
@@ -46,6 +51,8 @@ class LegacyApiService
             return $this->respond(['error' => $e->getMessage()], $e->status());
         } catch (Throwable $e) {
             return $this->respond(['error' => $e->getMessage()], 500);
+        } finally {
+            restore_error_handler();
         }
     }
 

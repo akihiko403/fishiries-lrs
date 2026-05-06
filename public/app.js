@@ -455,7 +455,19 @@ async function apiRequest(action, options = {}) {
   }
 
   const response = await fetch(`api.php?action=${encodeURIComponent(action)}`, fetchOptions);
-  const payload = await response.json();
+  const rawBody = await response.text();
+  let payload = null;
+
+  try {
+    payload = rawBody ? JSON.parse(rawBody) : {};
+  } catch (error) {
+    const compactBody = rawBody
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    throw new Error(compactBody || "The server returned an invalid response.");
+  }
 
   if (!response.ok || payload.error) {
     throw new Error(payload.error || "Request failed.");
