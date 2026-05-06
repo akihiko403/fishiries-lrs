@@ -61,6 +61,21 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 COPY render-start.sh /usr/local/bin/render-start.sh
 RUN chmod +x /usr/local/bin/render-start.sh
 
+ENV APP_ENV=production \
+    APP_DEBUG=false \
+    LOG_CHANNEL=stack \
+    LOG_LEVEL=error \
+    DB_CONNECTION=pgsql \
+    DB_SSLMODE=require \
+    SESSION_DRIVER=cookie \
+    SESSION_SECURE_COOKIE=true \
+    FILESYSTEM_DISK=local \
+    QUEUE_CONNECTION=sync \
+    CACHE_STORE=file \
+    RUN_MIGRATIONS=true \
+    RUN_SEEDERS=true \
+    PORT=10000
+
 EXPOSE 10000
 
 CMD ["render-start.sh"]

@@ -24,8 +24,12 @@ php artisan route:clear || true
 php artisan view:clear || true
 php artisan package:discover --ansi || true
 
-if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
+if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   php artisan migrate --force
+fi
+
+if [ "${RUN_SEEDERS:-true}" = "true" ]; then
+  php artisan db:seed --force
 fi
 
 exec php -d variables_order=EGPCS artisan serve --host=0.0.0.0 --port="$PORT"
