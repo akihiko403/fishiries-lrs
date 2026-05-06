@@ -73,7 +73,6 @@ ENV APP_ENV=production \
     QUEUE_CONNECTION=sync \
     CACHE_STORE=file \
     RUN_MIGRATIONS=true \
-    RUN_SEEDERS=true \
     PORT=10000
 
 EXPOSE 10000
