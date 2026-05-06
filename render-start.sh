@@ -7,6 +7,18 @@ if [ ! -f .env ] && [ -f .env.example ]; then
   cp .env.example .env
 fi
 
+if [ -z "${APP_KEY:-}" ]; then
+  if [ -f .env ] && grep -q '^APP_KEY=$' .env; then
+    APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
+    export APP_KEY
+    sed -i "s|^APP_KEY=$|APP_KEY=${APP_KEY}|" .env
+  elif [ ! -f .env ]; then
+    APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')"
+    export APP_KEY
+    printf 'APP_KEY=%s\n' "$APP_KEY" > .env
+  fi
+fi
+
 php artisan config:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
