@@ -3,9 +3,10 @@ set -eu
 
 PORT="${PORT:-10000}"
 
-if [ ! -f .env ] && [ -f .env.example ]; then
-  cp .env.example .env
-fi
+echo "Starting Laravel on port ${PORT}"
+echo "APP_ENV=${APP_ENV:-unset}"
+echo "APP_KEY_PRESENT=$([ -n "${APP_KEY:-}" ] && echo yes || echo no)"
+echo "DB_HOST_PRESENT=$([ -n "${DB_HOST:-}" ] && echo yes || echo no)"
 
 if [ -z "${APP_KEY:-}" ]; then
   if [ -f .env ] && grep -q '^APP_KEY=$' .env; then
