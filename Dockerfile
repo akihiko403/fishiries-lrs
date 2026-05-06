@@ -30,9 +30,12 @@ FROM php:8.4-cli-alpine
 WORKDIR /app
 
 RUN apk add --no-cache \
+    $PHPIZE_DEPS \
     libzip \
     libpq \
+    libpq-dev \
     oniguruma \
+    oniguruma-dev \
     sqlite-libs \
     postgresql-client \
     zip \
@@ -46,7 +49,8 @@ RUN apk add --no-cache \
     pdo_mysql \
     bcmath \
     mbstring \
-    pcntl
+    pcntl \
+    && apk del --no-network $PHPIZE_DEPS oniguruma-dev libpq-dev
 
 COPY --from=vendor /app /app
 COPY --from=frontend /app/public/build /app/public/build
