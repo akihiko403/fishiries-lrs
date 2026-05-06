@@ -52,6 +52,14 @@ RUN apk add --no-cache \
     pcntl \
     && apk del --no-network $PHPIZE_DEPS oniguruma-dev libpq-dev
 
+RUN { \
+    echo 'upload_max_filesize=64M'; \
+    echo 'post_max_size=64M'; \
+    echo 'memory_limit=256M'; \
+    echo 'max_execution_time=120'; \
+    echo 'max_input_time=120'; \
+  } > /usr/local/etc/php/conf.d/render-upload-limits.ini
+
 COPY --from=vendor /app /app
 COPY --from=frontend /app/public/build /app/public/build
 
